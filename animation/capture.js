@@ -6,7 +6,7 @@ const FRAME_DIR = path.join(__dirname, "frames");
 const HTML_PATH = `file://${path.join(__dirname, "tasksmith-animation.html")}`;
 const FPS = 20;
 const FRAME_INTERVAL = 1000 / FPS;
-const DURATION_SEC = 14; // total animation duration ~13s + buffer
+const DURATION_SEC = 22; // total animation duration ~20s + buffer
 const TOTAL_FRAMES = DURATION_SEC * FPS;
 
 (async () => {
