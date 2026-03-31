@@ -2,7 +2,7 @@
 
 Multi-agent orchestration framework that decomposes complex requests into isolated DAG nodes and executes them with topological scheduling.
 
-![How TaskSmith Works](tasksmith-how-it-works.gif)
+<video src="tasksmith-how-it-works.mp4" autoplay loop muted playsinline width="800"></video>
 
 ## How It Works
 
