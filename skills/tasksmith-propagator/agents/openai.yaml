@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tasksmith Propagator"
+  short_description: "Propagate failures through the DAG"
+  default_prompt: "Use $tasksmith-propagator to analyze a failed or blocked Tasksmith node, propagate its downstream impact through the DAG, and decide whether to rewire, skip, or escalate."

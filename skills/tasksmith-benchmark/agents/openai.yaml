@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tasksmith Benchmark"
+  short_description: "Compare Tasksmith harness variants"
+  default_prompt: "Use $tasksmith-benchmark to run and compare Tasksmith benchmark experiments across baseline and DAG-isolated variants."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tasksmith Exec"
+  short_description: "Run one isolated agent session via local CLI"
+  default_prompt: "Use $tasksmith-exec to run this node in a fresh isolated agent session and return the structured result."

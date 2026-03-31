@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tasksmith Loop"
+  short_description: "Repeat worker and evaluator attempts for one node"
+  default_prompt: "Use $tasksmith-loop to run this Tasksmith node through $tasksmith-worker, let $tasksmith-evaluator judge it in isolated sessions via $tasksmith-exec, and keep retrying only when the verdict is needs_revision."
