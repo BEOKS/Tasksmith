@@ -1,4 +1,0 @@
-interface:
-  display_name: "Tasksmith Scheduler"
-  short_description: "Schedule and dispatch ready DAG nodes"
-  default_prompt: "Use $tasksmith-scheduler to execute the ready nodes of this Tasksmith DAG with isolated loop runs and DAG status updates."

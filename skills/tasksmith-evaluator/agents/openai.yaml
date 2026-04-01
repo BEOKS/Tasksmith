@@ -1,4 +1,0 @@
-interface:
-  display_name: "Tasksmith Evaluator"
-  short_description: "Evaluate whether a worker truly completed a node"
-  default_prompt: "Use $tasksmith-evaluator to judge whether this completed Tasksmith node actually satisfies the node goal, success criteria, and output contract, then return pass or revision feedback."

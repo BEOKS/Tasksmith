@@ -1,4 +1,0 @@
-interface:
-  display_name: "Tasksmith DAG"
-  short_description: "Expand plan.md into next DAG nodes"
-  default_prompt: "Use $tasksmith-dag to add the next DAG nodes from plan.md and mark the covered request text."

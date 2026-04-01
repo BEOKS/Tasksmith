@@ -1,4 +1,0 @@
-interface:
-  display_name: "Tasksmith Clarifier"
-  short_description: "Define the request in detail before planning"
-  default_prompt: "Use $tasksmith-clarifier to turn this request into a highly detailed planning brief with objective, scope boundaries, deliverables, acceptance criteria, constraints, dependencies, assumptions, and open questions."

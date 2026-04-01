@@ -1,4 +1,0 @@
-interface:
-  display_name: "Tasksmith Orchestrator"
-  short_description: "Drive the full Tasksmith workflow"
-  default_prompt: "Use $tasksmith-orchestrator to drive this request through clarification, DAG construction, isolated execution, failure propagation, and final result assembly."

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Tasksmith Worker"
-  short_description: "Execute one DAG node in an isolated session"
-  default_prompt: "Use $tasksmith-worker to execute this single DAG node through $tasksmith-exec in a fresh isolated session, then run $tasksmith-evaluator to return a final pass or revision result."

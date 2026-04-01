@@ -1,9 +1,0 @@
-{
-  "dag_file": "/private/tmp/tasksmith-test-dag.json",
-  "run_number": 2,
-  "run_status": "success",
-  "stop_reason": "All DAG nodes completed successfully.",
-  "max_parallel": 2,
-  "waves": [],
-  "summary_ref": "/Users/leejs/Project/tasksmith/tasksmith/scheduler-runs/run-002/summary.json"
-}

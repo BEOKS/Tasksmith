@@ -1,4 +1,0 @@
-interface:
-  display_name: "Tasksmith DAG Builder"
-  short_description: "Convert plan.md into a complete DAG graph"
-  default_prompt: "Use $tasksmith-dag-builder to iteratively expand plan.md into a complete DAG graph with isolated node-building runs and request coverage marks."
