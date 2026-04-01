@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tasksmith Unit"
+  short_description: "Estimate task size in LLM work units"
+  default_prompt: "Use $tasksmith-unit to estimate how many single-agent work units this task requires. Estimate against one bounded agent run and never assume spawn_agent or other interactive sub-agent delegation is available."

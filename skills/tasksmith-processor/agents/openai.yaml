@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tasksmith Processor"
+  short_description: "Supervise worker and evaluator retry loops for one task"
+  default_prompt: "Use $tasksmith-processor to supervise one Tasksmith task by repeatedly launching fresh non-interactive $tasksmith-worker and $tasksmith-evaluator runs until the task passes or reaches a terminal blocker. Never use spawn_agent or other interactive sub-agent tools instead of those runs."

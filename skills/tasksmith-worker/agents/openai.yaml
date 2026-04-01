@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tasksmith Worker"
+  short_description: "Execute one Tasksmith task end to end"
+  default_prompt: "Use $tasksmith-worker to execute one Tasksmith task from a created task directory and verify its acceptance criteria without changing task state. Complete the work in one agent run and never use spawn_agent or other interactive sub-agent tools."

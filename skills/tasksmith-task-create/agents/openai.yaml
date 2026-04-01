@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tasksmith Task Create"
+  short_description: "Create Tasksmith task scaffold folders"
+  default_prompt: "Use $tasksmith-task-create to create a Tasksmith task directory and acceptance scaffold. Complete it in one agent run and never use spawn_agent or other interactive sub-agent tools."

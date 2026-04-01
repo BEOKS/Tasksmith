@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tasksmith Evaluator"
+  short_description: "Evaluate one Tasksmith worker result"
+  default_prompt: "Use $tasksmith-evaluator to independently evaluate one Tasksmith task after $tasksmith-worker, inspect the task directory and repository evidence, and produce pass/fail feedback. Complete the evaluation in one agent run and never use spawn_agent or other interactive sub-agent tools."

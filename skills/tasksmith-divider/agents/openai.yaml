@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tasksmith Divider"
+  short_description: "Recursively split requests into atomic Tasksmith tasks"
+  default_prompt: "Use $tasksmith-divider in a fresh non-interactive run to recursively decompose a request until each leaf is 1 unit or smaller, then create leaf tasks with $tasksmith-task-create. Never use spawn_agent or other interactive sub-agent tools for recursion or leaf creation."

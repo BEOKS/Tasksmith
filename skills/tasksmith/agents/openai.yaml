@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tasksmith"
+  short_description: "Dispatch and execute full Tasksmith workflows"
+  default_prompt: "Use $tasksmith to decompose my request with $tasksmith-divider, start tasksmith-dispatcher.py, and orchestrate the work until the task tree reaches a terminal outcome. Launch every delegated Tasksmith step only through a fresh non-interactive runner such as codex exec or claude -p. Never use spawn_agent or other interactive sub-agent tools as a substitute."
