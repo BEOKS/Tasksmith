@@ -1,0 +1,35 @@
+stages:
+  - deploy
+
+variables:
+  TASKSMITH_NEXUS_URL: "https://repo.gabia.com/repository/raw-repository/tasksmith"
+
+deploy:skills:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $NEXUS_USERNAME && $NEXUS_PASSWORD
+      changes:
+        - .gitlab-ci.yml
+        - README.md
+        - install.sh
+        - install.ps1
+        - skills/**/*
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $NEXUS_USERNAME && $NEXUS_PASSWORD
+      when: manual
+      allow_failure: true
+  image: alpine:latest
+  script:
+    - set -euo pipefail
+    - apk add --no-cache zip curl
+    - find skills -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort > skills/manifest.txt
+    - rm -f tasksmith-skills.zip
+    - cd skills
+    - zip -r ../tasksmith-skills.zip . -x "__pycache__/*" "*.pyc" ".DS_Store" "*.git*"
+    - cd ..
+    - curl --fail --silent --show-error -u "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" --upload-file install.sh "${TASKSMITH_NEXUS_URL}/install.sh"
+    - curl --fail --silent --show-error -u "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" --upload-file install.ps1 "${TASKSMITH_NEXUS_URL}/install.ps1"
+    - curl --fail --silent --show-error -u "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" --upload-file skills/manifest.txt "${TASKSMITH_NEXUS_URL}/manifest.txt"
+    - curl --fail --silent --show-error -u "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" --upload-file tasksmith-skills.zip "${TASKSMITH_NEXUS_URL}/tasksmith-skills.zip"
+    - echo "Published:"
+    - echo "  curl -fsSL ${TASKSMITH_NEXUS_URL}/install.sh | bash"
+    - echo "  irm ${TASKSMITH_NEXUS_URL}/install.ps1 | iex"
