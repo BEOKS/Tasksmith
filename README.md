@@ -12,6 +12,22 @@ Tasksmith는 이런 한계를 줄이기 위해 복잡한 요청을 단일 에이
 복잡한 요청을 원자적 작업 단위로 재귀 분할하고, 의존성 기반 DAG 순서로 자동 실행합니다.
 각 작업은 Worker-Evaluator 루프를 통해 통과할 때까지 반복 검증됩니다.
 
+## 스킬 설치
+
+배포된 Tasksmith 스킬은 `install.sh` 또는 `install.ps1`로 Claude Code, Codex, Cursor 같은 에이전트 스킬 디렉터리에 바로 설치할 수 있습니다.
+
+### macOS / Linux
+
+```bash
+curl -fsSL https://repo.gabia.com/repository/raw-repository/tasksmith/install.sh | bash
+```
+
+### Windows (PowerShell)
+
+```powershell
+irm https://repo.gabia.com/repository/raw-repository/tasksmith/install.ps1 | iex
+```
+
 ## 핵심 흐름
 
 ```
@@ -42,77 +58,6 @@ tasksmith
 ```
 복잡한 요청을 tasksmith로 실행해줘
 ```
-
-## 스킬 설치
-
-배포된 Tasksmith 스킬은 `install.sh` 또는 `install.ps1`로 Claude Code, Codex, Cursor 같은 에이전트 스킬 디렉터리에 바로 설치할 수 있습니다.
-
-### macOS / Linux
-
-원격 배포본 설치:
-
-```bash
-curl -fsSL https://repo.gabia.com/repository/raw-repository/tasksmith/install.sh | bash
-```
-
-특정 에이전트만 설치:
-
-```bash
-curl -fsSL https://repo.gabia.com/repository/raw-repository/tasksmith/install.sh | bash -s -- --codex
-```
-
-특정 스킬만 설치:
-
-```bash
-curl -fsSL https://repo.gabia.com/repository/raw-repository/tasksmith/install.sh | bash -s -- --codex --skills "tasksmith,tasksmith-worker"
-```
-
-로컬 체크아웃 기준 설치:
-
-```bash
-./install.sh --codex
-```
-
-사용 가능한 스킬 목록 확인:
-
-```bash
-./install.sh --list
-```
-
-### Windows (PowerShell)
-
-대화형 설치:
-
-```powershell
-irm https://repo.gabia.com/repository/raw-repository/tasksmith/install.ps1 | iex
-```
-
-Codex CLI에만 설치:
-
-```powershell
-$env:TASKSMITH_AGENTS = "codex"
-irm https://repo.gabia.com/repository/raw-repository/tasksmith/install.ps1 | iex
-```
-
-특정 스킬만 설치:
-
-```powershell
-$env:TASKSMITH_AGENTS = "codex"
-$env:TASKSMITH_SKILLS = "tasksmith,tasksmith-worker"
-irm https://repo.gabia.com/repository/raw-repository/tasksmith/install.ps1 | iex
-```
-
-### 지원 에이전트
-
-| Agent | 설치 경로 |
-| --- | --- |
-| Claude Code | `~/.claude/skills` |
-| Cursor | `~/.claude/skills` |
-| Codex CLI | `~/.codex/skills` |
-| OpenCode | `~/.config/opencode/skills` |
-| Gemini CLI | `~/.gemini/skills` |
-| Antigravity | `~/.gemini/antigravity/global_skills` |
-| GitHub Copilot | `~/.claude/skills` |
 
 ## 배포 파이프라인
 
