@@ -50,7 +50,7 @@ The evaluator may include extra debugging fields, but these keys should always e
 Prefer this attempt directory shape:
 
 ```text
-tasksmith/evaluator-runs/N12/attempt-001/
+.tasksmith/evaluator-runs/N12/attempt-001/
   brief.txt
   execution.json
   stdout.txt

@@ -8,6 +8,11 @@ description: Analyze a failed or blocked Tasksmith DAG node, trace its downstrea
 Recover graph progress after a node fails without pretending the original plan is still intact.
 Use this skill to determine whether downstream nodes truly require the missing output, whether an alternative path can satisfy them, and whether the DAG should be patched, partially skipped, or escalated to the user.
 
+## Data Storage Rule
+
+Persist any Tasksmith handoff data, intermediate artifacts, or reusable run state that this skill creates for downstream skills under the workspace `.tasksmith/` directory.
+Use temporary paths outside `.tasksmith/` only for short-lived scratch files that are consumed immediately and do not represent durable Tasksmith state.
+
 ## Core Rule
 
 Treat failure propagation as graph-level reasoning, not node execution.
@@ -137,7 +142,7 @@ If the graph needs a new node, create it as a normal explicit DAG node rather th
 Leave a propagation report in Markdown or JSON under a stable workspace path such as:
 
 ```text
-tasksmith/propagation-runs/run-001/
+.tasksmith/propagation-runs/run-001/
 ```
 
 Persist at least:

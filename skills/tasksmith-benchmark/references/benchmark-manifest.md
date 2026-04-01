@@ -8,7 +8,7 @@ The manifest should be compact, explicit, and stable across reruns.
 Store benchmark experiments under:
 
 ```text
-tasksmith/benchmarks/<experiment-name>/
+.tasksmith/benchmarks/<experiment-name>/
   manifest.json
   results/
     summary.json
@@ -65,8 +65,8 @@ Use a JSON object shaped like:
         "propagation_count": 0
       },
       "artifacts": {
-        "scheduler_summary": "/absolute/path/tasksmith/scheduler-runs/run-004/summary.json",
-        "report": "/absolute/path/tasksmith/benchmarks/exp-001/results/task-001-run-001.md"
+        "scheduler_summary": "/absolute/path/.tasksmith/scheduler-runs/run-004/summary.json",
+        "report": "/absolute/path/.tasksmith/benchmarks/exp-001/results/task-001-run-001.md"
       },
       "notes": {
         "provider": "codex",

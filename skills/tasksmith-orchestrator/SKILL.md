@@ -8,6 +8,11 @@ description: Orchestrate the full Tasksmith lifecycle from request intake to fin
 Drive the whole Tasksmith workflow without collapsing planning, execution, evaluation, and recovery into one long session.
 Use this skill as the top-level control plane above the rest of the Tasksmith skill family.
 
+## Data Storage Rule
+
+Persist any Tasksmith handoff data, intermediate artifacts, or reusable run state that this skill creates for downstream skills under the workspace `.tasksmith/` directory.
+Use temporary paths outside `.tasksmith/` only for short-lived scratch files that are consumed immediately and do not represent durable Tasksmith state.
+
 ## Core Rule
 
 Treat orchestration as stateful control, not as direct work execution.
@@ -104,7 +109,7 @@ Do not restart the whole run when a smaller repair step will do.
 Persist run artifacts under a stable path such as:
 
 ```text
-tasksmith/runs/run-001/
+.tasksmith/runs/run-001/
 ```
 
 Maintain at least these artifacts:

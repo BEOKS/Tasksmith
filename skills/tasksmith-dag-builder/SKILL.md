@@ -8,6 +8,11 @@ description: Convert a Tasksmith `plan.md` produced by `tasksmith:clarifier` int
 Turn a clarified Tasksmith plan into a fully covered DAG without letting the planner session absorb every node-building decision.
 Use this skill as the orchestration layer above `tasksmith:dag` and `tasksmith:exec`.
 
+## Data Storage Rule
+
+Persist any Tasksmith handoff data, intermediate artifacts, or reusable run state that this skill creates for downstream skills under the workspace `.tasksmith/` directory.
+Use temporary paths outside `.tasksmith/` only for short-lived scratch files that are consumed immediately and do not represent durable Tasksmith state.
+
 ## Purpose
 
 Do all of the following:
@@ -87,7 +92,7 @@ Role: isolated DAG node-builder
 Goal: add the next single DAG node that covers the next uncovered part of plan.md
 Artifacts:
 - /abs/path/plan.md
-- /abs/path/tasksmith/dag.json
+- /abs/path/.tasksmith/dag.json
 Constraints:
 - use tasksmith:dag for DAG mutations
 - add exactly one new node

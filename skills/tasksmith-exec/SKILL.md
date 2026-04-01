@@ -8,6 +8,11 @@ description: Run one task in a fresh isolated agent session through a locally in
 Run exactly one subtask in a new agent session and return only the result artifact needed by the caller.
 Keep planner context out of the worker session. Pass only the node brief, required inputs, constraints, success criteria, and output contract.
 
+## Data Storage Rule
+
+Persist any Tasksmith handoff data, intermediate artifacts, or reusable run state that this skill creates for downstream skills under the workspace `.tasksmith/` directory.
+Use temporary paths outside `.tasksmith/` only for short-lived scratch files that are consumed immediately and do not represent durable Tasksmith state.
+
 ## Workflow
 
 Follow this sequence:

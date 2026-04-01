@@ -8,6 +8,11 @@ description: Design, run, and compare Tasksmith benchmark experiments across mul
 Design benchmark experiments that test whether the Tasksmith harness is actually better than simpler alternatives.
 Use this skill to define comparison variants, run repeatable trials, aggregate artifacts from earlier Tasksmith skills, and produce a report that separates decomposition effects from isolation effects.
 
+## Data Storage Rule
+
+Persist any Tasksmith handoff data, intermediate artifacts, or reusable run state that this skill creates for downstream skills under the workspace `.tasksmith/` directory.
+Use temporary paths outside `.tasksmith/` only for short-lived scratch files that are consumed immediately and do not represent durable Tasksmith state.
+
 ## Core Rule
 
 Treat benchmarking as a separate analysis layer above the runtime skills.
@@ -124,7 +129,7 @@ Store experiment definitions in a JSON manifest.
 Use a stable path such as:
 
 ```text
-tasksmith/benchmarks/<experiment-name>/manifest.json
+.tasksmith/benchmarks/<experiment-name>/manifest.json
 ```
 
 The manifest should define:
@@ -160,8 +165,8 @@ Use the bundled script to aggregate manifest-linked trial data:
 
 ```bash
 python3 scripts/summarize_benchmark.py \
-  --manifest /absolute/path/tasksmith/benchmarks/exp-001/manifest.json \
-  --output-dir /absolute/path/tasksmith/benchmarks/exp-001/results \
+  --manifest /absolute/path/.tasksmith/benchmarks/exp-001/manifest.json \
+  --output-dir /absolute/path/.tasksmith/benchmarks/exp-001/results \
   --json
 ```
 
@@ -169,12 +174,12 @@ Useful variants:
 
 ```bash
 python3 scripts/summarize_benchmark.py \
-  --manifest /absolute/path/tasksmith/benchmarks/exp-001/manifest.json \
-  --output-dir /absolute/path/tasksmith/benchmarks/exp-001/results \
+  --manifest /absolute/path/.tasksmith/benchmarks/exp-001/manifest.json \
+  --output-dir /absolute/path/.tasksmith/benchmarks/exp-001/results \
   --markdown
 
 python3 scripts/summarize_benchmark.py \
-  --manifest /absolute/path/tasksmith/benchmarks/exp-001/manifest.json \
+  --manifest /absolute/path/.tasksmith/benchmarks/exp-001/manifest.json \
   --dry-run \
   --json
 ```
@@ -201,7 +206,7 @@ Do not describe the result as a clear win unless the benchmark question supports
 Persist benchmark artifacts under a stable workspace path such as:
 
 ```text
-tasksmith/benchmarks/<experiment-name>/
+.tasksmith/benchmarks/<experiment-name>/
 ```
 
 Persist at minimum:

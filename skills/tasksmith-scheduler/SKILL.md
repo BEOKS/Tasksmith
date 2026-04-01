@@ -8,6 +8,11 @@ description: Orchestrate full-DAG execution for Tasksmith by reading the authori
 Run the whole DAG without collapsing the graph into one long planner session.
 Use this skill after `tasksmith-dag-builder` or another planner has produced an execution-ready DAG and you need graph-level orchestration.
 
+## Data Storage Rule
+
+Persist any Tasksmith handoff data, intermediate artifacts, or reusable run state that this skill creates for downstream skills under the workspace `.tasksmith/` directory.
+Use temporary paths outside `.tasksmith/` only for short-lived scratch files that are consumed immediately and do not represent durable Tasksmith state.
+
 ## Core Rule
 
 The scheduler is the DAG-level orchestrator, not the executor.
@@ -103,7 +108,7 @@ Use the bundled script:
 
 ```bash
 python3 scripts/run_scheduler.py \
-  --dag-file /absolute/path/tasksmith/dag.json \
+  --dag-file /absolute/path/.tasksmith/dag.json \
   --cwd /absolute/worktree \
   --max-parallel 3 \
   --json
@@ -113,7 +118,7 @@ Useful variants:
 
 ```bash
 python3 scripts/run_scheduler.py \
-  --dag-file /absolute/path/tasksmith/dag.json \
+  --dag-file /absolute/path/.tasksmith/dag.json \
   --cwd /absolute/worktree \
   --provider codex \
   --evaluation-provider codex \
@@ -121,13 +126,13 @@ python3 scripts/run_scheduler.py \
   --json
 
 python3 scripts/run_scheduler.py \
-  --dag-file /absolute/path/tasksmith/dag.json \
+  --dag-file /absolute/path/.tasksmith/dag.json \
   --cwd /absolute/worktree \
   --resume \
   --json
 
 python3 scripts/run_scheduler.py \
-  --dag-file /absolute/path/tasksmith/dag.json \
+  --dag-file /absolute/path/.tasksmith/dag.json \
   --cwd /absolute/worktree \
   --dry-run \
   --json
@@ -176,7 +181,7 @@ Do not pretend the DAG succeeded when unresolved nodes remain.
 Persist scheduler artifacts under a stable workspace path such as:
 
 ```text
-tasksmith/scheduler-runs/run-001/
+.tasksmith/scheduler-runs/run-001/
 ```
 
 Persist at least:

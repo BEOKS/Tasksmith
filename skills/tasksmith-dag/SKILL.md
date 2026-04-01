@@ -9,6 +9,11 @@ Read the current planning artifact, preserve the existing DAG, and add only the 
 Treat the DAG JSON file as the single source of truth and mutate it only through the bundled script.
 Convert request text into execution-ready node specs without exceeding what one isolated worker session should handle.
 
+## Data Storage Rule
+
+Persist any Tasksmith handoff data, intermediate artifacts, or reusable run state that this skill creates for downstream skills under the workspace `.tasksmith/` directory.
+Use temporary paths outside `.tasksmith/` only for short-lived scratch files that are consumed immediately and do not represent durable Tasksmith state.
+
 ## Workflow
 
 Follow this sequence:
@@ -28,7 +33,7 @@ Do not hand-edit node definitions inside the JSON file except when repairing a b
 
 ## Source Of Truth
 
-Store the DAG in exactly one JSON file, for example `tasksmith/dag.json` or another explicit path chosen by the project.
+Store the DAG in exactly one JSON file, for example `.tasksmith/dag.json` or another explicit path chosen by the project.
 Treat that JSON file as authoritative for:
 
 - node ids

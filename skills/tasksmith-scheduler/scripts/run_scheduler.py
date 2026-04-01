@@ -41,22 +41,22 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--results-dir",
         type=Path,
-        help="Directory for scheduler artifacts. Defaults to <cwd>/tasksmith/scheduler-runs.",
+        help="Directory for scheduler artifacts. Defaults to <cwd>/.tasksmith/scheduler-runs.",
     )
     parser.add_argument(
         "--loop-results-dir",
         type=Path,
-        help="Directory for loop artifacts. Defaults to <cwd>/tasksmith/loop-runs.",
+        help="Directory for loop artifacts. Defaults to <cwd>/.tasksmith/loop-runs.",
     )
     parser.add_argument(
         "--worker-results-dir",
         type=Path,
-        help="Directory for worker artifacts. Defaults to <cwd>/tasksmith/worker-runs.",
+        help="Directory for worker artifacts. Defaults to <cwd>/.tasksmith/worker-runs.",
     )
     parser.add_argument(
         "--evaluation-results-dir",
         type=Path,
-        help="Directory for evaluator artifacts. Defaults to <cwd>/tasksmith/evaluator-runs.",
+        help="Directory for evaluator artifacts. Defaults to <cwd>/.tasksmith/evaluator-runs.",
     )
     parser.add_argument("--provider", default="auto", help="Provider passed through to tasksmith-loop.")
     parser.add_argument("--model", help="Optional model name passed through to tasksmith-loop.")
@@ -234,11 +234,11 @@ def build_loop_command(args: argparse.Namespace, node_id: str, cwd: Path) -> lis
         "--cwd",
         str(cwd),
         "--results-dir",
-        str((args.loop_results_dir or (cwd / "tasksmith" / "loop-runs")).resolve()),
+        str((args.loop_results_dir or (cwd / ".tasksmith" / "loop-runs")).resolve()),
         "--worker-results-dir",
-        str((args.worker_results_dir or (cwd / "tasksmith" / "worker-runs")).resolve()),
+        str((args.worker_results_dir or (cwd / ".tasksmith" / "worker-runs")).resolve()),
         "--evaluation-results-dir",
-        str((args.evaluation_results_dir or (cwd / "tasksmith" / "evaluator-runs")).resolve()),
+        str((args.evaluation_results_dir or (cwd / ".tasksmith" / "evaluator-runs")).resolve()),
         "--provider",
         args.provider,
         "--evaluation-provider",
@@ -344,7 +344,7 @@ def main() -> int:
     if not dag_file.exists():
         raise SystemExit(f"DAG file not found: {dag_file}")
 
-    results_dir = (args.results_dir or (cwd / "tasksmith" / "scheduler-runs")).resolve()
+    results_dir = (args.results_dir or (cwd / ".tasksmith" / "scheduler-runs")).resolve()
     run_number = next_run_number(results_dir)
     run_dir = results_dir / f"run-{run_number:03d}"
     run_dir.mkdir(parents=True, exist_ok=False)

@@ -63,7 +63,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--results-dir",
         type=Path,
-        help="Directory for evaluator artifacts. Defaults to <cwd>/tasksmith/evaluator-runs.",
+        help="Directory for evaluator artifacts. Defaults to <cwd>/.tasksmith/evaluator-runs.",
     )
     parser.add_argument(
         "--provider",
@@ -250,7 +250,7 @@ def main() -> int:
         worker_execution_path = (cwd / worker_execution_path).resolve()
     worker_attempt_dir = worker_execution_path.parent
 
-    results_dir = (args.results_dir or (cwd / "tasksmith" / "evaluator-runs")).resolve()
+    results_dir = (args.results_dir or (cwd / ".tasksmith" / "evaluator-runs")).resolve()
     node_dir = results_dir / node["id"]
     worker_attempt = worker_result.get("attempt")
     attempt = args.attempt if args.attempt is not None else (

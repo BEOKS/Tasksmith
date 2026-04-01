@@ -10,6 +10,11 @@ Reduce avoidable ambiguity before DAG decomposition by making objective, scope, 
 
 Do not solve the task here. Make the task precisely definable and safely plannable.
 
+## Data Storage Rule
+
+Persist any Tasksmith handoff data, intermediate artifacts, or reusable run state that this skill creates for downstream skills under the workspace `.tasksmith/` directory.
+Use temporary paths outside `.tasksmith/` only for short-lived scratch files that are consumed immediately and do not represent durable Tasksmith state.
+
 ## Do This
 
 Follow this sequence:

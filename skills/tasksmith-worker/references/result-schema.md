@@ -17,11 +17,11 @@ The worker may include additional debugging fields, but these keys should always
   "result_summary": "Produced the requested markdown output and completed evaluator pass/fail review.",
   "warnings": [],
   "failure_reason": "Evaluator found the file incomplete for the node requirements.",
-  "raw_execution_ref": "/absolute/path/tasksmith/worker-runs/N12/attempt-001/execution.json",
+  "raw_execution_ref": "/absolute/path/.tasksmith/worker-runs/N12/attempt-001/execution.json",
   "evaluation_verdict": "needs_revision",
   "evaluation_summary": "The file exists but omits product gaps and does not satisfy the comparison criteria.",
-  "evaluation_ref": "/absolute/path/tasksmith/evaluator-runs/N12/attempt-001/evaluation.json",
-  "revision_source_ref": "/absolute/path/tasksmith/evaluator-runs/N12/attempt-001/evaluation.json"
+  "evaluation_ref": "/absolute/path/.tasksmith/evaluator-runs/N12/attempt-001/evaluation.json",
+  "revision_source_ref": "/absolute/path/.tasksmith/evaluator-runs/N12/attempt-001/evaluation.json"
 }
 ```
 
@@ -53,7 +53,7 @@ The worker may include additional debugging fields, but these keys should always
 Prefer this attempt directory shape:
 
 ```text
-tasksmith/worker-runs/N12/attempt-001/
+.tasksmith/worker-runs/N12/attempt-001/
   brief.txt
   execution.json
   stdout.txt
@@ -67,5 +67,5 @@ Do not overwrite a previous attempt directory.
 The corresponding evaluation attempt should usually live at:
 
 ```text
-tasksmith/evaluator-runs/N12/attempt-001/
+.tasksmith/evaluator-runs/N12/attempt-001/
 ```

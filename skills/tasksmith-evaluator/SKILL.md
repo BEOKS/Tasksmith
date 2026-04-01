@@ -8,6 +8,11 @@ description: Evaluate a completed Tasksmith DAG node against the node goal, cons
 Judge whether one finished node actually satisfies the task, not just whether the worker produced files.
 Keep the evaluator separate from the worker session so execution context does not leak into the judgment.
 
+## Data Storage Rule
+
+Persist any Tasksmith handoff data, intermediate artifacts, or reusable run state that this skill creates for downstream skills under the workspace `.tasksmith/` directory.
+Use temporary paths outside `.tasksmith/` only for short-lived scratch files that are consumed immediately and do not represent durable Tasksmith state.
+
 ## Workflow
 
 Follow this sequence:
@@ -76,8 +81,8 @@ Worker Evidence:
 - Output artifacts:
   - /abs/path/analysis/competitor-comparison.md
 - Supporting files:
-  - /abs/path/tasksmith/worker-runs/N12/attempt-001/stdout.txt
-  - /abs/path/tasksmith/worker-runs/N12/attempt-001/execution.json
+  - /abs/path/.tasksmith/worker-runs/N12/attempt-001/stdout.txt
+  - /abs/path/.tasksmith/worker-runs/N12/attempt-001/execution.json
 Evaluation Task:
 - Inspect the artifacts directly.
 - Return pass only if the produced work satisfies the node.
@@ -112,7 +117,7 @@ Use these verdict meanings:
 Save evaluation artifacts under a stable path such as:
 
 ```text
-tasksmith/evaluator-runs/N12/attempt-001/
+.tasksmith/evaluator-runs/N12/attempt-001/
 ```
 
 Persist at least:

@@ -8,6 +8,11 @@ description: Orchestrate repeated Tasksmith node execution until a node passes e
 Run the worker-evaluator repair cycle for exactly one node.
 Keep orchestration separate from execution: this skill decides whether to continue, but each worker and evaluator attempt must remain isolated.
 
+## Data Storage Rule
+
+Persist any Tasksmith handoff data, intermediate artifacts, or reusable run state that this skill creates for downstream skills under the workspace `.tasksmith/` directory.
+Use temporary paths outside `.tasksmith/` only for short-lived scratch files that are consumed immediately and do not represent durable Tasksmith state.
+
 ## Core Rule
 
 Never execute the node directly inside the loop session.
@@ -51,7 +56,7 @@ Use the bundled script:
 
 ```bash
 python3 scripts/run_loop.py \
-  --dag-file /absolute/path/tasksmith/dag.json \
+  --dag-file /absolute/path/.tasksmith/dag.json \
   --node-id N12 \
   --cwd /absolute/worktree \
   --max-attempts 3 \
@@ -69,7 +74,7 @@ python3 scripts/run_loop.py \
   --json
 
 python3 scripts/run_loop.py \
-  --dag-file /absolute/path/tasksmith/dag.json \
+  --dag-file /absolute/path/.tasksmith/dag.json \
   --node-id N12 \
   --cwd /absolute/worktree \
   --dry-run \
@@ -101,7 +106,7 @@ Use the evaluator artifact as repair guidance for the next isolated worker attem
 Save loop artifacts under a stable workspace path such as:
 
 ```text
-tasksmith/loop-runs/N12/run-001/
+.tasksmith/loop-runs/N12/run-001/
 ```
 
 Persist at least:

@@ -36,7 +36,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--results-dir",
         type=Path,
-        help="Directory for worker run artifacts. Defaults to <cwd>/tasksmith/worker-runs.",
+        help="Directory for worker run artifacts. Defaults to <cwd>/.tasksmith/worker-runs.",
     )
     parser.add_argument(
         "--provider",
@@ -53,7 +53,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--evaluation-results-dir",
         type=Path,
-        help="Directory for evaluator artifacts. Defaults to <cwd>/tasksmith/evaluator-runs.",
+        help="Directory for evaluator artifacts. Defaults to <cwd>/.tasksmith/evaluator-runs.",
     )
     parser.add_argument(
         "--skip-evaluation",
@@ -177,6 +177,26 @@ def load_revision_payload(path: Path | None) -> dict[str, Any] | None:
     if verdict != "needs_revision":
         raise SystemExit("--revision-file must point to an evaluator payload with verdict 'needs_revision'.")
     return payload
+
+
+def resolve_execution_cwd(node: dict[str, Any], cwd: Path) -> Path:
+    raw = node.get("working_directory")
+    if raw is None:
+        return cwd
+    if not isinstance(raw, str) or not raw.strip():
+        raise SystemExit("Node field 'working_directory' must be a non-empty string when present.")
+
+    path = Path(raw).expanduser()
+    if not path.is_absolute():
+        path = (cwd / path).resolve()
+    else:
+        path = path.resolve()
+
+    if not path.exists():
+        raise SystemExit(f"Node working_directory does not exist: {path}")
+    if not path.is_dir():
+        raise SystemExit(f"Node working_directory must be a directory: {path}")
+    return path
 
 
 def build_brief(
@@ -343,7 +363,7 @@ def run_evaluator(
             "--cwd",
             str(cwd),
             "--results-dir",
-            str((args.evaluation_results_dir or (cwd / "tasksmith" / "evaluator-runs")).resolve()),
+            str((args.evaluation_results_dir or (cwd / ".tasksmith" / "evaluator-runs")).resolve()),
             "--provider",
             args.evaluation_provider,
             "--attempt",
@@ -412,8 +432,9 @@ def main() -> int:
     cwd = args.cwd.resolve()
     node = load_node(args)
     revision_payload = load_revision_payload(args.revision_file)
+    execution_cwd = resolve_execution_cwd(node, cwd)
 
-    results_dir = (args.results_dir or (cwd / "tasksmith" / "worker-runs")).resolve()
+    results_dir = (args.results_dir or (cwd / ".tasksmith" / "worker-runs")).resolve()
     node_dir = results_dir / node["id"]
     attempt = args.attempt if args.attempt is not None else next_attempt(node_dir)
     if attempt < 1:
@@ -464,7 +485,7 @@ def main() -> int:
         "--provider",
         args.provider,
         "--cwd",
-        str(cwd),
+        str(execution_cwd),
         "--prompt-file",
         str(brief_path),
         "--capture-output",
@@ -563,7 +584,7 @@ def main() -> int:
     if status == "success" and not args.skip_evaluation:
         evaluation_payload = run_evaluator(args, node, cwd, result_path, execution_path, attempt)
         evaluation_ref = str(
-            (args.evaluation_results_dir or (cwd / "tasksmith" / "evaluator-runs")).resolve()
+            (args.evaluation_results_dir or (cwd / ".tasksmith" / "evaluator-runs")).resolve()
             / node["id"]
             / f"attempt-{attempt:03d}"
             / "evaluation.json"

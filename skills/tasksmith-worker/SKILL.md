@@ -8,6 +8,11 @@ description: Execute one Tasksmith DAG node from an authoritative DAG JSON file 
 Execute exactly one DAG node and leave a structured execution record that a later orchestrator can inspect.
 Keep the worker narrow: it is the single-node executor, not the full DAG scheduler.
 
+## Data Storage Rule
+
+Persist any Tasksmith handoff data, intermediate artifacts, or reusable run state that this skill creates for downstream skills under the workspace `.tasksmith/` directory.
+Use temporary paths outside `.tasksmith/` only for short-lived scratch files that are consumed immediately and do not represent durable Tasksmith state.
+
 ## Core Rule
 
 Always execute the node through `tasksmith-exec` or an equivalent fresh-session runner.
@@ -104,7 +109,7 @@ Use the bundled worker script to prepare and run the node:
 
 ```bash
 python3 scripts/run_worker.py \
-  --dag-file /absolute/path/tasksmith/dag.json \
+  --dag-file /absolute/path/.tasksmith/dag.json \
   --node-id N12 \
   --cwd /absolute/worktree \
   --provider auto \
@@ -122,14 +127,14 @@ python3 scripts/run_worker.py \
   --json
 
 python3 scripts/run_worker.py \
-  --dag-file /absolute/path/tasksmith/dag.json \
+  --dag-file /absolute/path/.tasksmith/dag.json \
   --node-id N12 \
   --cwd /absolute/worktree \
-  --revision-file /absolute/path/tasksmith/evaluator-runs/N12/attempt-001/evaluation.json \
+  --revision-file /absolute/path/.tasksmith/evaluator-runs/N12/attempt-001/evaluation.json \
   --json
 
 python3 scripts/run_worker.py \
-  --dag-file /absolute/path/tasksmith/dag.json \
+  --dag-file /absolute/path/.tasksmith/dag.json \
   --node-id N12 \
   --cwd /absolute/worktree \
   --dry-run \
@@ -178,7 +183,7 @@ At minimum, record:
 Save attempt artifacts under a stable workspace path such as:
 
 ```text
-tasksmith/worker-runs/N12/attempt-001/
+.tasksmith/worker-runs/N12/attempt-001/
 ```
 
 Persist at least:

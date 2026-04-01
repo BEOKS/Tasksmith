@@ -36,17 +36,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--results-dir",
         type=Path,
-        help="Directory for loop run artifacts. Defaults to <cwd>/tasksmith/loop-runs.",
+        help="Directory for loop run artifacts. Defaults to <cwd>/.tasksmith/loop-runs.",
     )
     parser.add_argument(
         "--worker-results-dir",
         type=Path,
-        help="Directory for worker artifacts. Defaults to <cwd>/tasksmith/worker-runs.",
+        help="Directory for worker artifacts. Defaults to <cwd>/.tasksmith/worker-runs.",
     )
     parser.add_argument(
         "--evaluation-results-dir",
         type=Path,
-        help="Directory for evaluator artifacts. Defaults to <cwd>/tasksmith/evaluator-runs.",
+        help="Directory for evaluator artifacts. Defaults to <cwd>/.tasksmith/evaluator-runs.",
     )
     parser.add_argument("--provider", default="auto", help="Provider passed through to tasksmith-worker.")
     parser.add_argument("--model", help="Optional model name passed through to tasksmith-worker.")
@@ -155,9 +155,9 @@ def run_worker_attempt(
         "--cwd",
         str(cwd),
         "--results-dir",
-        str((args.worker_results_dir or (cwd / "tasksmith" / "worker-runs")).resolve()),
+        str((args.worker_results_dir or (cwd / ".tasksmith" / "worker-runs")).resolve()),
         "--evaluation-results-dir",
-        str((args.evaluation_results_dir or (cwd / "tasksmith" / "evaluator-runs")).resolve()),
+        str((args.evaluation_results_dir or (cwd / ".tasksmith" / "evaluator-runs")).resolve()),
         "--provider",
         args.provider,
         "--evaluation-provider",
@@ -197,7 +197,7 @@ def run_worker_attempt(
     if not isinstance(payload, dict):
         raise SystemExit("tasksmith-worker returned a non-object JSON payload.")
     return payload, worker_result_path(
-        (args.worker_results_dir or (cwd / "tasksmith" / "worker-runs")).resolve(),
+        (args.worker_results_dir or (cwd / ".tasksmith" / "worker-runs")).resolve(),
         node["id"],
         attempt,
     )
@@ -218,7 +218,7 @@ def main() -> int:
 
     cwd = args.cwd.resolve()
     node = load_node(args)
-    results_dir = (args.results_dir or (cwd / "tasksmith" / "loop-runs")).resolve()
+    results_dir = (args.results_dir or (cwd / ".tasksmith" / "loop-runs")).resolve()
     node_dir = results_dir / node["id"]
     run_number = next_run(node_dir)
     run_dir = node_dir / f"run-{run_number:03d}"
