@@ -1,0 +1,23 @@
+# OS files
+.DS_Store
+
+# Local editor and agent state
+.omc/
+**/.omc/
+
+# Python cache artifacts
+__pycache__/
+**/__pycache__/
+*.py[cod]
+
+# Node dependencies
+node_modules/
+**/node_modules/
+
+# Generated capture outputs
+capture-output/
+animation/frames/
+
+# Local asset/render workspaces
+animation/
+tasksmith/
