@@ -1,59 +1,38 @@
 # Processor Loop Contract
 
-Supervise one existing task until it passes or reaches a terminal stop condition.
+`tasksmith-processor` owns orchestration only.
+Prefer `scripts/run_processor.py` over open-coded loop logic.
 
 ## Inputs
 
-Expect one task identifier or one task directory under:
+- one task ID or one task directory
+- one fresh non-interactive worker run per attempt
+- one fresh non-interactive evaluator run per attempt
+- latest `평가결과.md` carried into the next worker attempt
 
-```text
-./tasksmith/tasks/{ID}-{title}
-```
+## Verdict Rules
 
-Expect the worker and evaluator skills to own the task mutations.
-The processor owns orchestration only.
+- `통과`: stop successfully
+- `수정필요`: run another worker attempt against the evaluator's concrete unmet items
+- `차단됨`: stop and surface the blocker
 
-## Loop Semantics
+Treat `평가결과.md` as the authoritative verdict source, not worker stdout.
 
-Run attempts in this order:
+## Stall Rule
 
-1. worker
-2. evaluator
-3. branch on evaluator verdict
+Treat the loop as stalled when both are true:
 
-Treat the evaluator verdicts like this:
+1. the evaluator repeats the same unmet item
+2. the task or workspace shows no material change across attempts
 
-- `통과`: finish successfully
-- `수정필요`: retry the worker with the evaluator's unmet items
-- `차단됨`: finish with blocked status
+When stalled, stop and report the repeated unmet item instead of retrying indefinitely.
 
-## Retry Input
+## Summary
 
-Before each retry, pass the worker only the minimum context needed:
-
-- task ID or task path
-- repository root when not running from it
-- latest `평가결과.md`
-- any blocking note from `현재상태.md`
-
-Do not re-send the entire planner conversation when the task files already contain the authoritative contract.
-
-## Stall Detection
-
-Treat the loop as stalled when all of the following are true:
-
-1. the evaluator returns `수정필요` again
-2. the main unmet item is materially the same as the previous attempt
-3. the worker did not change repository evidence or task evidence enough to move the task forward
-
-When stalled, stop and report the repeated unmet item rather than hiding an infinite loop.
-
-## Summary Contract
-
-Return a compact summary with:
+Return:
 
 - task ID
 - final verdict
-- number of worker attempts
-- path to the latest `평가결과.md`
-- next action for either the next worker, the divider, or a human
+- worker attempt count
+- latest `평가결과.md` path
+- next action

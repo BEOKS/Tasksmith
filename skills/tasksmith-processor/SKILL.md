@@ -1,28 +1,36 @@
 ---
 name: tasksmith-processor
-description: Supervise one Tasksmith task by repeatedly launching fresh non-interactive `tasksmith:worker` and `tasksmith:evaluator` runs until the evaluator returns `통과` or a terminal blocker is confirmed. Use when Codex needs to orchestrate retryable execution for one existing task in `./tasksmith/tasks/{ID}-{title}`, respond to prompts such as `tasksmith:processor`, or implement a processor loop that delegates each attempt through isolated runners such as `codex exec` or `claude -p`.
+description: Supervise one Tasksmith task by running a deterministic processor loop around fresh non-interactive `tasksmith:worker` and `tasksmith:evaluator` sessions until the evaluator returns `통과` or a terminal blocker is confirmed. Use when Codex needs to orchestrate retryable execution for one existing task in `./tasksmith/tasks/{ID}-{title}`, respond to prompts such as `tasksmith:processor`, or drive the loop through `skills/tasksmith-processor/scripts/run_processor.py`.
 ---
 
 # Tasksmith Processor
 
-Supervise one Tasksmith task through a worker and evaluator retry loop.
-Treat `tasksmith-worker` as the implementation step and `tasksmith-evaluator` as the gate that decides whether another worker pass is required.
+Supervise one Tasksmith task through a worker/evaluator retry loop.
+Treat `tasksmith-worker` as the implementation step and `tasksmith-evaluator` as the gate.
+Use the bundled scripts first so loop control stays deterministic and repeatable.
+
+## Script-First Workflow
+
+1. Resolve the task context.
+   Run `python3 skills/tasksmith-processor/scripts/prepare_processor.py --task TASK-001 --format brief`.
+2. Run the processor loop.
+   Run `python3 skills/tasksmith-processor/scripts/run_processor.py --task TASK-001`.
+3. Inspect the result.
+   Trust `평가결과.md` as the authoritative verdict source, not worker stdout.
+
+If the Tasksmith root is not `./tasksmith/tasks`, pass `--root <absolute-task-root>`.
+If the repository root is not the current working directory, pass `--workspace-root <absolute-repo-root>`.
 
 ## Execution Boundary
 
 Run every worker and evaluator attempt through a fresh non-interactive agent session.
-Use isolated runners such as:
-
-- `codex exec`
-- `claude -p`
-
-Do not execute the worker body or evaluator body inline inside the supervising session.
-The processor may remain in the current session, but each delegated run must be fresh and non-interactive.
+Use isolated runners such as `codex exec` or `claude -p`.
+Do not execute the worker or evaluator body inline inside the supervising session.
 Do not replace those runs with `spawn_agent` or any other interactive delegation tool.
 
 ## Core Algorithm
 
-Implement this control flow:
+The loop contract is:
 
 ```text
 processor(task):
@@ -42,22 +50,52 @@ Interpret `non-pass` conservatively:
 - `수정필요`: run another worker attempt using the latest `평가결과.md`
 - `차단됨`: stop and report the blocker instead of spinning forever
 
-## Workflow
+`run_processor.py` makes these decisions from task files:
 
-Follow this sequence:
+- resolve the task directory deterministically
+- launch one fresh worker session
+- launch one fresh evaluator session
+- parse `평가결과.md` for the authoritative verdict
+- detect stalls when the same unmet item repeats without material task or repository change
+- stop on `통과`, `차단됨`, worker/evaluator runner failure, or max-attempt limit
 
-1. Resolve the target task.
-   Accept either a task ID such as `TASK-001` or an absolute task directory path.
-2. Inspect the latest task state.
-   Read `현재상태.md` and `평가결과.md` when it exists so the next worker attempt starts from the newest evidence.
-3. Launch the worker in a fresh non-interactive session.
-   Pass only the task identifier, the repository path when needed, and the latest evaluator feedback.
-4. Launch the evaluator in a second fresh non-interactive session.
-   Treat the evaluator verdict as authoritative for loop control.
-5. Branch on the verdict.
-   Stop on `통과`, retry on `수정필요`, and stop on `차단됨`.
-6. Return a compact processor summary.
-   Include the final verdict, the number of worker attempts, and the current task path.
+## Runner Configuration
+
+Use the default preset when possible:
+
+```bash
+python3 skills/tasksmith-processor/scripts/run_processor.py --task TASK-001
+```
+
+Override the runner when needed:
+
+```bash
+python3 skills/tasksmith-processor/scripts/run_processor.py \
+  --task TASK-001 \
+  --runner claude \
+  --runner-bin claude
+```
+
+Use explicit command templates when the repository already has a wrapper:
+
+```bash
+python3 skills/tasksmith-processor/scripts/run_processor.py \
+  --task TASK-001 \
+  --worker-command 'my-runner worker --task {task_id} --root {tasks_root}' \
+  --evaluator-command 'my-runner evaluator --task {task_id} --root {tasks_root}'
+```
+
+Supported template placeholders:
+
+- `{task_id}`
+- `{task_dir}`
+- `{tasks_root}`
+- `{tasksmith_root}`
+- `{workspace_root}`
+- `{evaluation_report}`
+- `{prompt}`
+
+Use `{prompt}` only when the wrapper expects a raw non-interactive prompt string.
 
 ## Retry Rules
 
@@ -69,40 +107,8 @@ Apply these rules on every retry:
 - preserve truthful task files between attempts
 - stop retrying when the evaluator returns `차단됨`
 
-If the same `수정필요` reason repeats without any material repository or task-file change, stop and report the loop as stalled instead of hiding an infinite retry.
-
-## Non-Interactive Invocation
-
-Use any runner that guarantees a fresh session for each delegated step.
-
-Examples:
-
-```bash
-codex exec --ephemeral "Use \$tasksmith-worker to execute TASK-001"
-```
-
-```bash
-codex exec --ephemeral "Use \$tasksmith-evaluator to evaluate TASK-001"
-```
-
-```bash
-claude -p "Use \$tasksmith-worker to execute TASK-001"
-```
-
-```bash
-claude -p "Use \$tasksmith-evaluator to evaluate TASK-001"
-```
-
-If a local wrapper already standardizes non-interactive execution, use that wrapper.
-What matters is the contract:
-
-- one fresh session per worker attempt
-- one fresh session per evaluator attempt
-- no hidden dependence on interactive planner state
-- evaluator feedback carried forward explicitly
-
-In Codex runtimes, `spawn_agent`, `send_input`, `wait_agent`, `resume_agent`, and `close_agent` do not satisfy this contract.
-If a required non-interactive run cannot be launched, stop and report the blocker instead of delegating interactively.
+Treat a repeated `수정필요` reason plus unchanged task/workspace fingerprints as a stalled loop.
+Stop and report the repeated gap instead of hiding an infinite retry.
 
 ## Suggested Output
 
@@ -134,6 +140,9 @@ Do not use `spawn_agent` or any other interactive sub-agent feature as a substit
 
 Use these bundled resources:
 
+- `scripts/prepare_processor.py`: resolve the task and summarize the latest processor-loop context
+- `scripts/run_processor.py`: run the deterministic worker/evaluator loop
+- `scripts/task_io.py`: shared task resolution, report parsing, and stall-detection helpers
 - [references/processor-loop.md](references/processor-loop.md): loop control rules, verdict handling, and prompt handoff guidance
 
 ## Tasksmith Context
